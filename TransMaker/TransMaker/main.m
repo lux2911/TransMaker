@@ -66,7 +66,8 @@
         NSString* str=[arr componentsJoinedByString:@"\n"];
         NSError* err=nil;
         
-        [str writeToFile:[NSString stringWithFormat:@"%@.strings",aKey]  atomically:NO encoding:NSUTF8StringEncoding error:&err];
+        if ([str length]>0)
+          [str writeToFile:[NSString stringWithFormat:@"%@.strings",aKey]  atomically:NO encoding:NSUTF8StringEncoding error:&err];
         
         
     }
