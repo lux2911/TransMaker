@@ -21,7 +21,7 @@
     NSMutableDictionary * _languages;
     NSMutableDictionary* _columnMap;
     NSMutableArray* _keysOrder;
-
+    NSString* _wrongCharacters;
 }
 
 
@@ -79,6 +79,8 @@
     
     _languages=[NSMutableDictionary dictionary];
     _columnMap=[NSMutableDictionary dictionary];
+    
+    _wrongCharacters=[[NSString alloc] initWithFormat:@"%c%c",0xC2,0xA0];
     
     NSString* file= [[NSBundle mainBundle] pathForResource:@"Languages" ofType:@"plist"];
     
@@ -149,6 +151,8 @@
     if (1>=[vals count])
         return;
     
+    
+    
     if (!_keysOrder)
         _keysOrder=[NSMutableArray array];
     
@@ -175,7 +179,13 @@
                 int idx=[val intValue];
                 val=[val stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%d",idx] withString:target[idx]];
                 
+                
             }
+            
+             val=[val stringByReplacingOccurrencesOfString:@"\\\"\"" withString:@"\\\""];
+             val=[val stringByReplacingOccurrencesOfString:_wrongCharacters withString:@" "];
+            
+            
             
             langDict[vals[0]]=val;
             
