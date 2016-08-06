@@ -157,8 +157,14 @@
     if (!_keysOrder)
         _keysOrder=[NSMutableArray array];
     
-    if (![_keysOrder containsObject:vals[0]])
-        [_keysOrder addObject:vals[0]];
+    
+     NSString* keyValue=[vals[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    
+    if (![_keysOrder containsObject:keyValue])
+    {
+        
+        [_keysOrder addObject:keyValue ];
+    }
     
     for (int i=0; i<[vals count]; i++) {
         
@@ -169,6 +175,8 @@
         
         if (aKey)
         {
+            aKey=[aKey stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            
             NSMutableDictionary* langDict= _languages[aKey];
             
             NSString* val=vals[colIdx.integerValue];
@@ -187,7 +195,7 @@
             val=[val stringByReplacingOccurrencesOfString:@" " withString:@" "];
             
                        
-            langDict[vals[0]]=val;
+            langDict[keyValue]=val;
             
         }
         
