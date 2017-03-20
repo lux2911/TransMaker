@@ -128,13 +128,14 @@
     NSString *tmp;
     
   
-    
+   
     while ([scanner isAtEnd] == NO)
     {
         [scanner scanUpToString:@",\"" intoString:NULL];
         [scanner scanString:@",\"" intoString:NULL];
         [scanner scanUpToString:@"\"," intoString:&tmp];
-        if ([scanner isAtEnd] == NO)
+        //if ([scanner isAtEnd] == NO)
+           if ([tmp length]>0)
             [target addObject:tmp];
         [scanner scanString:@"\"" intoString:NULL];
     }
@@ -166,6 +167,8 @@
         [_keysOrder addObject:keyValue ];
     }
     
+    
+    
     for (int i=0; i<[vals count]; i++) {
         
         NSNumber* colIdx = [NSNumber numberWithInteger:i];
@@ -185,6 +188,7 @@
             {
                 val=[val stringByReplacingOccurrencesOfString:@"\"$$##" withString:@""];
                 val=[val stringByReplacingOccurrencesOfString:@"$$##\"" withString:@""];
+                val=[val stringByReplacingOccurrencesOfString:@"$$##" withString:@""];
                 int idx=[val intValue];
                 val=[val stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%d",idx] withString:target[idx]];
                 
@@ -193,7 +197,8 @@
             
             val=[val stringByReplacingOccurrencesOfString:@"\\\"\"" withString:@"\\\""];
             val=[val stringByReplacingOccurrencesOfString:@" " withString:@" "];
-            
+            val=[val stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            val=[val stringByReplacingOccurrencesOfString:@"\n" withString:@""];
                        
             langDict[keyValue]=val;
             
