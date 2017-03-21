@@ -21,7 +21,7 @@
     NSMutableDictionary * _languages;
     NSMutableDictionary* _columnMap;
     NSMutableArray* _keysOrder;
-    
+    NSUInteger _numberOfElements;
 }
 
 
@@ -30,6 +30,7 @@
     BRLineReader* reader=[[BRLineReader alloc] initWithFile:fileName encoding:NSUTF8StringEncoding];
     
     NSString* field=nil;
+    NSString* tmpField = @"";
     
     while ((field=[reader readLine]))
     {
@@ -42,7 +43,33 @@
         if (!_languages)
             [self initializeLanguages:field];
         else
+        {
+            NSArray* arr = [field componentsSeparatedByString:@","];
+            
+            if ([arr count] < _numberOfElements)
+            {
+                tmpField = [tmpField stringByAppendingString:field];
+                tmpField = [tmpField stringByReplacingOccurrencesOfString:@"\"""" withString:@""];
+                tmpField = [tmpField stringByReplacingOccurrencesOfString:@"""" withString:@""];
+                tmpField = [tmpField stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+                tmpField = [tmpField stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+                
+                arr = [tmpField componentsSeparatedByString:@","];
+                
+                if ([arr count] < _numberOfElements)
+                  continue;
+                else
+                    field = @"";
+            }
+            
+            if ([tmpField length]>0)
+            {
+                field = [tmpField stringByAppendingString:field];
+                tmpField = @"";
+            }
+            
             [self addField:field];
+        }
         
     }
     
@@ -90,6 +117,8 @@
     
     NSArray* langs=[aField componentsSeparatedByString:@","];
     
+    _numberOfElements = [langs count];
+    
     NSNumber* colIdx = [NSNumber numberWithInteger:0];
     
     for (NSString* lang in langs) {
@@ -127,7 +156,13 @@
     NSScanner *scanner = [NSScanner scannerWithString:aField];
     NSString *tmp;
     
-  
+    if ([aField rangeOfString:@"confirm_endday"].length>0)
+         {
+             ;
+         }
+
+    
+    
    
     while ([scanner isAtEnd] == NO)
     {
@@ -174,7 +209,7 @@
         NSNumber* colIdx = [NSNumber numberWithInteger:i];
         NSString* aKey=_columnMap[colIdx];
         
-        
+      
         
         if (aKey)
         {
